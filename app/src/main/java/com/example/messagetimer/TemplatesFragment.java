@@ -5,10 +5,12 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class TemplatesFragment extends ListFragment
+public class TemplatesFragment extends ListFragment implements AdapterView.OnItemClickListener
 {
     private long templateID;
 
@@ -33,20 +35,26 @@ public class TemplatesFragment extends ListFragment
         return inflater.inflate(R.layout.fragment_templates, container, false);
     }
 
+//    @Override
+//    public void onStart()
+//    {
+//        super.onStart();
+//
+//        //Gets the fragment's root view
+//        View view = getView();
+//
+//        if(view != null)
+//        {
+//            TextView title = (TextView) view.findViewById(R.id.);
+//            MsgTemplate templateshandler = MsgTemplate.templates[(int) templateID];
+//            title.setText(templateshandler.getContent());
+//        }
+//    }
+
     @Override
-    public void onStart()
+    public void onItemClick(AdapterView<?> parent, View view, int position,long id)
     {
-        super.onStart();
-
-        //Gets the fragment's root view
-        View view = getView();
-
-        if(view != null)
-        {
-            TextView title = (TextView) view.findViewById(R.id.templateText);
-            MsgTemplate templateshandler = MsgTemplate.templates[(int) templateID];
-            title.setText(templateshandler.getContent());
-        }
+        Toast.makeText(getActivity(), "Item: " + position, Toast.LENGTH_SHORT).show();
     }
 
     public void setTemplateID(long id)
