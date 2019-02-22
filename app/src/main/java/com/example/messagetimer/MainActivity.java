@@ -4,6 +4,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity
     //Allows to listen to DrawerLayout events like normal DrawerListener
     //And also allows opening and closing the drawer
     private ActionBarDrawerToggle drawerToggle;
+
+    //Set current position to 0
+    private int currentPosition = 0;
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
@@ -63,7 +67,13 @@ public class MainActivity extends AppCompatActivity
         //Add an instance of OnItemClickListener to the drawer's ListView
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        if (null == savedInstanceState)
+        //Display the correct fragment
+        if (null != savedInstanceState)
+        {
+            currentPosition = savedInstanceState.getInt("position");
+            setActionBarTitle(currentPosition);
+        }
+        else
         {
             itemSelection(0);
         }
@@ -85,6 +95,35 @@ public class MainActivity extends AppCompatActivity
             }
 
         };
+
+        getSupportFragmentManager().addOnBackStackChangedListener(
+                new FragmentManager.OnBackStackChangedListener()
+                {
+                    @Override
+                    public void onBackStackChanged()
+                    {
+                        FragmentManager fragmentManger = getSupportFragmentManager();
+                        Fragment fragment = fragmentManger.findFragmentByTag("visible_fragment");
+
+                        if(fragment instanceof MainFragment)
+                        {
+                            currentPosition = 0;
+                        }
+                        if(fragment instanceof TemplatesFragment)
+                        {
+                            currentPosition = 1;
+                        }
+                        if(fragment instanceof SendOrderFragment)
+                        {
+                            currentPosition = 2;
+                        }
+
+                        setActionBarTitle(currentPosition);
+                        drawerList.setItemChecked(currentPosition, true);
+
+                    }
+                }
+        );
 
 
         drawerLayout.addDrawerListener(drawerToggle);
@@ -176,7 +215,7 @@ public class MainActivity extends AppCompatActivity
     private void itemSelection(int position)
     {
         //Update main content by replacing fragments
-        //currentPosition = position;
+        currentPosition = position;
 
         Fragment fragment;
 
@@ -235,13 +274,13 @@ public class MainActivity extends AppCompatActivity
 
 
     //If the MainActivity is newly created, use this method do display chosen fragment
-//    @Override
-//    public void onSaveInstanceState(Bundle OutState)
-//    {
-//        itemSelection(0);
-//        super.onSaveInstanceState(OutState);
-//        //OutState.putInt("position", currentPosition);
-//    }
+    @Override
+    public void onSaveInstanceState(Bundle OutState)
+    {
+        itemSelection(0);
+        super.onSaveInstanceState(OutState);
+        OutState.putInt("position", currentPosition);
+    }
 
 
 }
