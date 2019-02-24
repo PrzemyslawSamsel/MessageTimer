@@ -1,5 +1,6 @@
 package com.example.messagetimer;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -26,6 +27,35 @@ public class TemplatesFragment extends ListFragment
     private MsgTemplate msgTemplate = new MsgTemplate();
     private ArrayAdapter<String> templateAdapter;
     private AlertDialog.Builder alertDialog;
+
+    public interface ChangeMessageTextListener
+        {
+        void onTemplateSelected(String text);
+    }
+
+    ChangeMessageTextListener mListener;
+
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        try
+        {
+            mListener = (ChangeMessageTextListener) activity;
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
+        }
+    }
+
+    @Override
+    public void onDetach()
+    {
+        // => avoid leaking
+        mListener = null;
+        super.onDetach();
+    }
 
 
     @Override
@@ -113,8 +143,13 @@ public class TemplatesFragment extends ListFragment
                 ft.addToBackStack(null);
                 ft.commit();
 
-                Toast.makeText(getActivity(), templateAdapter.getItem(position),
-                        Toast.LENGTH_LONG).show();
+                mListener.onTemplateSelected(templateAdapter.getItem(position));
+                //Add template to the current message text without deleting old message content
+
+
+
+//                Toast.makeText(getActivity(), templateAdapter.getItem(position),
+//                        Toast.LENGTH_LONG).show();
             }
 
         });

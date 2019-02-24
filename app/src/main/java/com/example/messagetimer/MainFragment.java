@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -244,6 +245,20 @@ public class MainFragment extends Fragment
         String message = messageView.getText().toString();
 
         SmsManager.getDefault().sendTextMessage(phoneNr, null, message, null, null);
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        if("" != MainActivity.templateString)
+        {
+            EditText textMessageEdit = (EditText) inflatedView.findViewById(R.id.message_text);
+            textMessageEdit.setText(MainActivity.templateString);
+            //(textMessageEdit.getText().append(templateAdapter.getItem(position)));
+            MainActivity.templateString = "";
+        }
+
     }
 
 }

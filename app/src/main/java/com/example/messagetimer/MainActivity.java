@@ -19,7 +19,9 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity implements AddTemplateFragment.AddClassDialogListener
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements AddTemplateFragment.AddClassDialogListener, TemplatesFragment.ChangeMessageTextListener
 {
     //For share action in ActionBar
     private ShareActionProvider shareActionProvider;
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements AddTemplateFragme
     //Set current position to 0
     private int currentPosition = 0;
 
+    public static String templateString;
+
     //Method invoked when user confirms new template
     @Override
     public void onDialogPositiveClick(EditText editText)
@@ -48,6 +52,12 @@ public class MainActivity extends AppCompatActivity implements AddTemplateFragme
     public void onDialogNegativeClick()
     {
         //Pass for now
+    }
+
+    @Override
+    public void onTemplateSelected(String string)
+    {
+        templateString = string;
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener
