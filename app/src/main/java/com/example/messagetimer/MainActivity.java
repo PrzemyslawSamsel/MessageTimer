@@ -50,9 +50,11 @@ public class MainActivity extends AppCompatActivity implements AddTemplateFragme
         //Pass for now
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+    private class DrawerItemClickListener implements ListView.OnItemClickListener
+    {
         @Override
-        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+        public void onItemClick(AdapterView<?> parent, View v, int position, long id)
+        {
             //Makes chosen by position fragment visible
             itemSelection(position);
 
