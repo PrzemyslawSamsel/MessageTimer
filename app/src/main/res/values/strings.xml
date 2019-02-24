@@ -32,4 +32,11 @@
     <string name="setclock">Set clock</string>
     <string name="Timer">Timer</string>
     <string name="Clock">Clock</string>
+    <string name="hmsFormat">\"%02d:%02d:%02d\"</string>
+    <string name="empty_timer">00:00:00</string>
+    <string name="InProgress">In Progress</string>
+    <string name="about">About</string>
+    <string name="Cheshie">Cheshie</string>
+    <string name="about_the_app">Hope you like the app.</string>
+    <string name="sig">Cheshie</string>
 </resources>

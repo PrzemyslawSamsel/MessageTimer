@@ -15,7 +15,7 @@ public class SendOrderFragment extends Fragment
                              Bundle savedInstanceState)
     {
 
-        return inflater.inflate(R.layout.fragment_templates, container, false);
+        return inflater.inflate(R.layout.fragment_sendorder, container, false);
     }
 
 }

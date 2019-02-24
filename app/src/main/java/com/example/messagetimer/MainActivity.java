@@ -38,7 +38,11 @@ public class MainActivity extends AppCompatActivity implements AddTemplateFragme
     //Set current position to 0
     private int currentPosition = 0;
 
+    //Vars for saving state of applications (passing argumets won't work and so)
     public static String templateString;
+    public static String messageContent;
+    public static String messageNumber;
+    public static ArrayList<String> templatesArray = new ArrayList<String>();
 
     //Method invoked when user confirms new template
     @Override
@@ -147,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements AddTemplateFragme
 
                         setActionBarTitle(currentPosition);
                         drawerList.setItemChecked(currentPosition, true);
-
                     }
                 }
         );
@@ -203,8 +206,19 @@ public class MainActivity extends AppCompatActivity implements AddTemplateFragme
         if (R.id.action_about == id)
         {
             //Starting new activity when about button was clicked
-            Intent intentToStartAbout = new Intent(this, AboutActivity.class);
-            startActivity(intentToStartAbout);
+            AboutFragment fragment = new AboutFragment();
+
+            android.support.v4.app.FragmentTransaction drawerFragmentTransaction = getSupportFragmentManager().beginTransaction();
+            //Replace current transaction with new fragment
+            drawerFragmentTransaction.replace(R.id.content_frame, fragment, "visible_fragment");
+            //Add it to back stack so that when user clicks back button it wiil get user back to it
+            drawerFragmentTransaction.addToBackStack(null);
+            //Set transition for this fragment transaction and commit changes
+            drawerFragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            drawerFragmentTransaction.commit();
+
+            //Set Action Bar title accordingly to chosen fragment
+            getSupportActionBar().setTitle(getResources().getString(R.string.about));
             return true;
         }
 
@@ -256,6 +270,9 @@ public class MainActivity extends AppCompatActivity implements AddTemplateFragme
                 break;
             default:
                 fragment = new MainFragment();
+//                Bundle args = new Bundle();
+//                args.putString("messageContent",messageContent);
+//                fragment.setArguments(args);
                 break;
         }
 

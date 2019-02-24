@@ -20,6 +20,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 public class TemplatesFragment extends ListFragment
 {
     private long templateID;
@@ -29,7 +32,7 @@ public class TemplatesFragment extends ListFragment
     private AlertDialog.Builder alertDialog;
 
     public interface ChangeMessageTextListener
-        {
+    {
         void onTemplateSelected(String text);
     }
 
@@ -56,7 +59,6 @@ public class TemplatesFragment extends ListFragment
         mListener = null;
         super.onDetach();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -124,6 +126,18 @@ public class TemplatesFragment extends ListFragment
     {
         ListView tmpList = (ListView) getActivity().findViewById(android.R.id.list);
 
+        //Getting saved state
+        if (!MainActivity.templatesArray.isEmpty())
+        {
+           int i = 0;
+
+           while ( null != MainActivity.templatesArray.get(i))
+           {
+               templateAdapter.add(MainActivity.templatesArray.get(i));
+           }
+           templateAdapter.notifyDataSetChanged();
+        }
+
         //For getting response when any of templates on the list is clicked
         super.onActivityCreated(savedInstanceState);
         tmpList.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -179,6 +193,7 @@ public class TemplatesFragment extends ListFragment
     public void addTemplate(String template)
     {
         templateAdapter.add(template);
+        MainActivity.templatesArray.add(template);
         templateAdapter.notifyDataSetChanged();
     }
 

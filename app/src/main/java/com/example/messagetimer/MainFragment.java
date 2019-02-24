@@ -35,18 +35,38 @@ public class MainFragment extends Fragment
 {
     // False - setTimer || True  - setClock
     private boolean setTimerOrClock = true;
+
+    //Dialog handler to choose time for sending messasge
     private TimePickerDialog timePickerDialog;
-    Button time_set;
-    Button send_message;
-    TextView phoneNumberView;
-    TextView messageView;
+
+    //Buttons and textView handlers - app logic
+    private Button time_set;
+    private Button send_message;
+    private TextView phoneNumberView;
+    private TextView messageView;
+
+
+    //Timer variables - state and it's current time
     private boolean isTimerRunning = false;
-    private boolean timerCancelled = false;
+    private long TIMEOUT;
+    private String hms;
+
     private View inflatedView;
 
-    long TIMEOUT;
-    String hms;
+    //For saving state of text message
+    private String messageText;
+    private String messageNumber;
 
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        EditText textMessageEdit = (EditText) inflatedView.findViewById(R.id.message_text);
+        EditText numberEdit = (EditText) inflatedView.findViewById(R.id.phone_number);
+
+        MainActivity.messageContent = textMessageEdit.getText().toString();
+        MainActivity.messageNumber  = numberEdit.getText().toString();
+    }
 
     public MainFragment()
     {
@@ -57,6 +77,7 @@ public class MainFragment extends Fragment
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+
         //Setting up inflater for the fragment and button for adding templates
         this.inflatedView = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -68,12 +89,30 @@ public class MainFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+        EditText textMessageEdit = (EditText) inflatedView.findViewById(R.id.message_text);
+        EditText numberEdit = (EditText) inflatedView.findViewById(R.id.phone_number);
+
+        //Getting saved state
+        if (null != savedInstanceState)
+        {
+            messageText = savedInstanceState.getString("messageText");
+            messageNumber = savedInstanceState.getString("messageNumber");
+            textMessageEdit.setText(messageText);
+            numberEdit.setText(messageNumber);
+        }
+        if (null != MainActivity.messageContent)
+        {
+            textMessageEdit.setText(MainActivity.messageContent);
+        }
+        if (null != MainActivity.messageNumber)
+        {
+
+            numberEdit.setText(MainActivity.messageNumber);
+        }
 
         // Setting buttons handlers
         time_set = (Button) inflatedView.findViewById(R.id.set_time);
         send_message = (Button) inflatedView.findViewById(R.id.send);
-        phoneNumberView = (TextView) inflatedView.findViewById(R.id.phone_number);
-        messageView = (TextView) inflatedView.findViewById(R.id.message_text);
         RadioGroup groupRadio = (RadioGroup) inflatedView.findViewById(R.id.radio_group);
 
         groupRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -103,7 +142,7 @@ public class MainFragment extends Fragment
             public void onClick(View v)
             {
                 TIMEOUT = 0;
-                time_set.setText("00:00:00");
+                time_set.setText(getResources().getString(R.string.empty_timer));
                 isTimerRunning = false;
                 openTimePickerDialog();
             }
@@ -156,7 +195,7 @@ public class MainFragment extends Fragment
                     long hours = TimeUnit.SECONDS.toHours(TIMEOUT);
                     long minutes = TimeUnit.SECONDS.toMinutes(TIMEOUT);
 
-                    hms = String.format("%02d:%02d:%02d", hours, minutes - TimeUnit.HOURS.toMinutes(hours), TIMEOUT%60);
+                    hms = String.format(getResources().getString(R.string.hmsFormat), hours, minutes - TimeUnit.HOURS.toMinutes(hours), TIMEOUT%60);
 
                     if(TIMEOUT == 0)
                     {
@@ -207,9 +246,9 @@ public class MainFragment extends Fragment
 
         // Set title for the dialog
         if (true == setTimerOrClock)
-            timePickerDialog.setTitle("@string/Clock");
+            timePickerDialog.setTitle(getResources().getString(R.string.Clock));
         else
-            timePickerDialog.setTitle("@string/Timer");
+            timePickerDialog.setTitle(getResources().getString(R.string.Timer));
 
         timePickerDialog.show();
     }
@@ -255,10 +294,18 @@ public class MainFragment extends Fragment
         {
             EditText textMessageEdit = (EditText) inflatedView.findViewById(R.id.message_text);
             textMessageEdit.setText(MainActivity.templateString);
-            //(textMessageEdit.getText().append(templateAdapter.getItem(position)));
             MainActivity.templateString = "";
         }
 
+    }
+
+    //If the MainActivity is newly created, use this method do display chosen fragment
+    @Override
+    public void onSaveInstanceState(Bundle OutState)
+    {
+        super.onSaveInstanceState(OutState);
+        OutState.putString("messageText", messageText);
+        OutState.putString("messageNumber",messageNumber);
     }
 
 }
